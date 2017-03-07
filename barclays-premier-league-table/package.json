@@ -1,0 +1,21 @@
+{
+  "name": "barclays-premier-league-table",
+  "version": "1.0.0",
+  "description": "A simple universal app built with React and Next.js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "next"
+  },
+  "keywords": [
+    "react",
+    "next.js",
+    "table"
+  ],
+  "author": "Ben Ellentuck <ellentb@wfu.edu> (https://github.com/bellentuck/starwars-names)",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "0.15.3",
+    "next": "1.2.3"
+  }
+}
