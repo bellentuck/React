@@ -1,18 +1,35 @@
 import React, { Component } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import axios from 'axios';
 
 // Returns 'Next' template
 export default class extends Component {
   // Async operation with getInitialProps
   static async getInitialProps() {
-    // res is assigned the response, once
-    // the axios async get completes.
-    const res = await axios.get('http://api.football-data.org/v1/competitions/426/leagueTable');
-    // Return props
-    return {data: res.data}
+    if (!process.browser) {
+      // res is assigned the response, once
+      // the axios async get completes.
+      const res = await axios.get('http://api.football-data.org/v1/competitions/426/leagueTable');
+      // Return props
+      return {data: res.data}
+    } else {
+      return {data: JSON.parse(sessionStorage.getItem('bpl'))}
+    }
   }
+
+  componentDidMount() {
+    if(!sessionStorage.getItem('bpl')) {
+      sessionStorage.setItem('bpl', JSON.stringify(this.props.data));
+    }
+  }
+
+
   render() {
+    const logoStyle = {
+      width: '30px'
+    }
+
     return (
       <div>
         <Head>
@@ -32,6 +49,7 @@ export default class extends Component {
           <div className="pure-u-1-3">
             <h1>Barclays Premier League</h1>
             <h2>(Look, Ma, a Table!)</h2>
+            <p><em>Click a logo to learn more.</em></p>
             <table className="pure-table">
               <thead>
                 <tr>
@@ -50,7 +68,7 @@ export default class extends Component {
                   return (
                     <tr key={i} className={oddOrNot}>
                       <td>{standing.position}</td>
-                      <td><img className="pure-img logo" src={standing.crestURI}/></td>
+                      <td><Link href={`details?id=${standing.position}`}><img className="pure-img logo" src={standing.crestURI}/></Link></td>
                       <td>{standing.points}</td>
                       <td>{standing.goals}</td>
                       <td>{standing.wins}</td>

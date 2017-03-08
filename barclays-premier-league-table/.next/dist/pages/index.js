@@ -12,6 +12,10 @@ var _asyncToGenerator2 = require('/Users/ellentb/dev/javascriptings/react/barcla
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
+var _stringify = require('/Users/ellentb/dev/javascriptings/react/barclays-premier-league-table/node_modules/babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _getPrototypeOf = require('/Users/ellentb/dev/javascriptings/react/barclays-premier-league-table/node_modules/babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -40,6 +44,10 @@ var _head = require('/Users/ellentb/dev/javascriptings/react/barclays-premier-le
 
 var _head2 = _interopRequireDefault(_head);
 
+var _link = require('/Users/ellentb/dev/javascriptings/react/barclays-premier-league-table/node_modules/next/dist/lib/link.js');
+
+var _link2 = _interopRequireDefault(_link);
+
 var _axios = require('axios');
 
 var _axios2 = _interopRequireDefault(_axios);
@@ -56,8 +64,19 @@ var _class = function (_Component) {
   }
 
   (0, _createClass3.default)(_class, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      if (!sessionStorage.getItem('bpl')) {
+        sessionStorage.setItem('bpl', (0, _stringify2.default)(this.props.data));
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var logoStyle = {
+        width: '30px'
+      };
+
       return _react2.default.createElement(
         'div',
         null,
@@ -94,6 +113,15 @@ var _class = function (_Component) {
               'h2',
               null,
               '(Look, Ma, a Table!)'
+            ),
+            _react2.default.createElement(
+              'p',
+              null,
+              _react2.default.createElement(
+                'em',
+                null,
+                'Click a logo to learn more.'
+              )
             ),
             _react2.default.createElement(
               'table',
@@ -157,7 +185,11 @@ var _class = function (_Component) {
                     _react2.default.createElement(
                       'td',
                       null,
-                      _react2.default.createElement('img', { className: 'pure-img logo', src: standing.crestURI })
+                      _react2.default.createElement(
+                        _link2.default,
+                        { href: 'details?id=' + standing.position },
+                        _react2.default.createElement('img', { className: 'pure-img logo', src: standing.crestURI })
+                      )
                     ),
                     _react2.default.createElement(
                       'td',
@@ -204,14 +236,22 @@ var _class = function (_Component) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                if (process.browser) {
+                  _context.next = 7;
+                  break;
+                }
+
+                _context.next = 3;
                 return _axios2.default.get('http://api.football-data.org/v1/competitions/426/leagueTable');
 
-              case 2:
+              case 3:
                 res = _context.sent;
                 return _context.abrupt('return', { data: res.data });
 
-              case 4:
+              case 7:
+                return _context.abrupt('return', { data: JSON.parse(sessionStorage.getItem('bpl')) });
+
+              case 8:
               case 'end':
                 return _context.stop();
             }
@@ -230,4 +270,3 @@ var _class = function (_Component) {
 }(_react.Component);
 
 exports.default = _class;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInBhZ2VzL2luZGV4LmpzIl0sIm5hbWVzIjpbInByb3BzIiwiZGF0YSIsInN0YW5kaW5nIiwibWFwIiwiaSIsIm9kZE9yTm90IiwicG9zaXRpb24iLCJjcmVzdFVSSSIsInBvaW50cyIsImdvYWxzIiwid2lucyIsImRyYXdzIiwibG9zc2VzIiwiZ2V0IiwicmVzIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUE7Ozs7QUFDQTs7OztBQUNBOzs7Ozs7QUFFQTs7Ozs7Ozs7Ozs7NkJBVVc7QUFDUCxhQUNFO0FBQUE7QUFBQTtBQUNFO0FBQUE7QUFBQTtBQUNFO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FERjtBQUVFO0FBQ0Usa0JBQUssVUFEUDtBQUVFLHFCQUFRO0FBRlYsWUFGRjtBQU1FO0FBQ0UsaUJBQUksWUFETjtBQUVFLGtCQUFLO0FBRlA7QUFORixTQURGO0FBYUU7QUFBQTtBQUFBLFlBQUssV0FBVSxRQUFmO0FBQ0UsaURBQUssV0FBVSxZQUFmLEdBREY7QUFFRTtBQUFBO0FBQUEsY0FBSyxXQUFVLFlBQWY7QUFDRTtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBREY7QUFFRTtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBRkY7QUFHRTtBQUFBO0FBQUEsZ0JBQU8sV0FBVSxZQUFqQjtBQUNFO0FBQUE7QUFBQTtBQUNFO0FBQUE7QUFBQTtBQUNFO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBREY7QUFFRTtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUZGO0FBR0U7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFIRjtBQUlFO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBSkY7QUFLRTtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUxGO0FBTUU7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFORjtBQU9FO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFQRjtBQURGLGVBREY7QUFZRTtBQUFBO0FBQUE7QUFDRyxxQkFBS0EsS0FBTCxDQUFXQyxJQUFYLENBQWdCQyxRQUFoQixDQUF5QkMsR0FBekIsQ0FBNkIsVUFBQ0QsUUFBRCxFQUFXRSxDQUFYLEVBQWlCO0FBQzdDLHNCQUFNQyxXQUFXRCxJQUFFLENBQUYsS0FBUSxDQUFSLEdBQVksZ0JBQVosR0FBK0IsRUFBaEQ7QUFDQSx5QkFDRTtBQUFBO0FBQUEsc0JBQUksS0FBS0EsQ0FBVCxFQUFZLFdBQVdDLFFBQXZCO0FBQ0U7QUFBQTtBQUFBO0FBQUtILCtCQUFTSTtBQUFkLHFCQURGO0FBRUU7QUFBQTtBQUFBO0FBQUksNkRBQUssV0FBVSxlQUFmLEVBQStCLEtBQUtKLFNBQVNLLFFBQTdDO0FBQUoscUJBRkY7QUFHRTtBQUFBO0FBQUE7QUFBS0wsK0JBQVNNO0FBQWQscUJBSEY7QUFJRTtBQUFBO0FBQUE7QUFBS04sK0JBQVNPO0FBQWQscUJBSkY7QUFLRTtBQUFBO0FBQUE7QUFBS1AsK0JBQVNRO0FBQWQscUJBTEY7QUFNRTtBQUFBO0FBQUE7QUFBS1IsK0JBQVNTO0FBQWQscUJBTkY7QUFPRTtBQUFBO0FBQUE7QUFBS1QsK0JBQVNVO0FBQWQ7QUFQRixtQkFERjtBQVdELGlCQWJBO0FBREg7QUFaRjtBQUhGLFdBRkY7QUFtQ0UsaURBQUssV0FBVSxZQUFmO0FBbkNGO0FBYkYsT0FERjtBQXFERDs7OztBQTlERDs7Ozs7Ozs7O3VCQUlvQixnQkFBTUMsR0FBTixDQUFVLDhEQUFWLEM7OztBQUFaQyxtQjtpREFFQyxFQUFDYixNQUFNYSxJQUFJYixJQUFYLEUiLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiL1VzZXJzL2VsbGVudGIvZGV2L2phdmFzY3JpcHRpbmdzL3JlYWN0L2JhcmNsYXlzLXByZW1pZXItbGVhZ3VlLXRhYmxlIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0LCB7IENvbXBvbmVudCB9IGZyb20gJ3JlYWN0JztcbmltcG9ydCBIZWFkIGZyb20gJ25leHQvaGVhZCc7XG5pbXBvcnQgYXhpb3MgZnJvbSAnYXhpb3MnO1xuXG4vLyBSZXR1cm5zICdOZXh0JyB0ZW1wbGF0ZVxuZXhwb3J0IGRlZmF1bHQgY2xhc3MgZXh0ZW5kcyBDb21wb25lbnQge1xuICAvLyBBc3luYyBvcGVyYXRpb24gd2l0aCBnZXRJbml0aWFsUHJvcHNcbiAgc3RhdGljIGFzeW5jIGdldEluaXRpYWxQcm9wcygpIHtcbiAgICAvLyByZXMgaXMgYXNzaWduZWQgdGhlIHJlc3BvbnNlLCBvbmNlXG4gICAgLy8gdGhlIGF4aW9zIGFzeW5jIGdldCBjb21wbGV0ZXMuXG4gICAgY29uc3QgcmVzID0gYXdhaXQgYXhpb3MuZ2V0KCdodHRwOi8vYXBpLmZvb3RiYWxsLWRhdGEub3JnL3YxL2NvbXBldGl0aW9ucy80MjYvbGVhZ3VlVGFibGUnKTtcbiAgICAvLyBSZXR1cm4gcHJvcHNcbiAgICByZXR1cm4ge2RhdGE6IHJlcy5kYXRhfVxuICB9XG4gIHJlbmRlcigpIHtcbiAgICByZXR1cm4gKFxuICAgICAgPGRpdj5cbiAgICAgICAgPEhlYWQ+XG4gICAgICAgICAgPHRpdGxlPkxlYWd1ZSBUYWJsZTwvdGl0bGU+XG4gICAgICAgICAgPG1ldGFcbiAgICAgICAgICAgIG5hbWU9XCJ2aWV3cG9ydFwiXG4gICAgICAgICAgICBjb250ZW50PVwiaW5pdGlhbC1zY2FsZT0xLjAsIHdpZHRoPWRldmljZS13aWR0aFwiXG4gICAgICAgICAgLz5cbiAgICAgICAgICA8bGlua1xuICAgICAgICAgICAgcmVsPVwic3R5bGVzaGVldFwiXG4gICAgICAgICAgICBocmVmPVwiaHR0cHM6Ly91bnBrZy5jb20vcHVyZWNzc0AwLjYuMS9idWlsZC9wdXJlLW1pbi5jc3NcIlxuICAgICAgICAgIC8+XG4gICAgICAgIDwvSGVhZD5cblxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInB1cmUtZ1wiPlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwicHVyZS11LTEtM1wiPjwvZGl2PlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwicHVyZS11LTEtM1wiPlxuICAgICAgICAgICAgPGgxPkJhcmNsYXlzIFByZW1pZXIgTGVhZ3VlPC9oMT5cbiAgICAgICAgICAgIDxoMj4oTG9vaywgTWEsIGEgVGFibGUhKTwvaDI+XG4gICAgICAgICAgICA8dGFibGUgY2xhc3NOYW1lPVwicHVyZS10YWJsZVwiPlxuICAgICAgICAgICAgICA8dGhlYWQ+XG4gICAgICAgICAgICAgICAgPHRyPlxuICAgICAgICAgICAgICAgICAgPHRoPlBvc2l0aW9uPC90aD5cbiAgICAgICAgICAgICAgICAgIDx0aD5UZWFtPC90aD5cbiAgICAgICAgICAgICAgICAgIDx0aD5Qb2ludHM8L3RoPlxuICAgICAgICAgICAgICAgICAgPHRoPkdvYWxzPC90aD5cbiAgICAgICAgICAgICAgICAgIDx0aD5XaW5zPC90aD5cbiAgICAgICAgICAgICAgICAgIDx0aD5EcmF3czwvdGg+XG4gICAgICAgICAgICAgICAgICA8dGg+TG9zc2VzPC90aD5cbiAgICAgICAgICAgICAgICA8L3RyPlxuICAgICAgICAgICAgICA8L3RoZWFkPlxuICAgICAgICAgICAgICA8dGJvZHk+XG4gICAgICAgICAgICAgICAge3RoaXMucHJvcHMuZGF0YS5zdGFuZGluZy5tYXAoKHN0YW5kaW5nLCBpKSA9PiB7XG4gICAgICAgICAgICAgICAgICBjb25zdCBvZGRPck5vdCA9IGklMiA9PT0gMSA/IFwicHVyZS10YWJsZS1vZGRcIiA6IFwiXCI7XG4gICAgICAgICAgICAgICAgICByZXR1cm4gKFxuICAgICAgICAgICAgICAgICAgICA8dHIga2V5PXtpfSBjbGFzc05hbWU9e29kZE9yTm90fT5cbiAgICAgICAgICAgICAgICAgICAgICA8dGQ+e3N0YW5kaW5nLnBvc2l0aW9ufTwvdGQ+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkPjxpbWcgY2xhc3NOYW1lPVwicHVyZS1pbWcgbG9nb1wiIHNyYz17c3RhbmRpbmcuY3Jlc3RVUkl9Lz48L3RkPlxuICAgICAgICAgICAgICAgICAgICAgIDx0ZD57c3RhbmRpbmcucG9pbnRzfTwvdGQ+XG4gICAgICAgICAgICAgICAgICAgICAgPHRkPntzdGFuZGluZy5nb2Fsc308L3RkPlxuICAgICAgICAgICAgICAgICAgICAgIDx0ZD57c3RhbmRpbmcud2luc308L3RkPlxuICAgICAgICAgICAgICAgICAgICAgIDx0ZD57c3RhbmRpbmcuZHJhd3N9PC90ZD5cbiAgICAgICAgICAgICAgICAgICAgICA8dGQ+e3N0YW5kaW5nLmxvc3Nlc308L3RkPlxuICAgICAgICAgICAgICAgICAgICA8L3RyPlxuICAgICAgICAgICAgICAgICAgKTtcbiAgICAgICAgICAgICAgICB9KX1cbiAgICAgICAgICAgICAgPC90Ym9keT5cbiAgICAgICAgICAgIDwvdGFibGU+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJwdXJlLXUtMS0zXCI+PC9kaXY+XG4gICAgICAgIDwvZGl2PlxuICAgICAgPC9kaXY+XG4gICAgKTtcbiAgfVxufVxuIl19

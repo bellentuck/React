@@ -28,16 +28,10 @@ var _react = require('/Users/ellentb/dev/javascriptings/react/barclays-premier-l
 
 var _react2 = _interopRequireDefault(_react);
 
-var _css = require('/Users/ellentb/dev/javascriptings/react/barclays-premier-league-table/node_modules/next/dist/lib/css.js');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _css2 = _interopRequireDefault(_css);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-var Error = function (_React$Component) {
-  (0, _inherits3.default)(Error, _React$Component);
+var Error = function (_Component) {
+  (0, _inherits3.default)(Error, _Component);
 
   function Error() {
     (0, _classCallCheck3.default)(this, Error);
@@ -47,11 +41,15 @@ var Error = function (_React$Component) {
   (0, _createClass3.default)(Error, [{
     key: 'render',
     value: function render() {
-      var statusCode = this.props.statusCode;
-
-      var title = statusCode === 404 ? 'This page could not be found' : statusCode ? 'Internal Server Error' : 'An unexpected error has occurred';
-
-      return _react2.default.createElement('div', { className: styles.error }, _react2.default.createElement('div', { className: styles.text }, statusCode ? _react2.default.createElement('h1', { className: styles.h1 }, statusCode) : null, _react2.default.createElement('div', { className: styles.desc }, _react2.default.createElement('h2', { className: styles.h2 }, title, '.'))));
+      return _react2.default.createElement(
+        'p',
+        null,
+        _react2.default.createElement(
+          'em',
+          null,
+          this.props.statusCode ? 'A ' + this.props.statusCode + ' server-side error has occurred.' : 'A client-side error has occurred.'
+        )
+      );
     }
   }], [{
     key: 'getInitialProps',
@@ -64,47 +62,6 @@ var Error = function (_React$Component) {
     }
   }]);
   return Error;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = Error;
-
-var styles = {
-  error: (0, _css2.default)({
-    color: '#000',
-    background: '#fff',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    position: 'absolute',
-    fontFamily: '-apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", "Fira Sans", Avenir, "Helvetica Neue", "Lucida Grande", sans-serif',
-    textAlign: 'center',
-    paddingTop: '20%'
-  }),
-
-  desc: (0, _css2.default)({
-    display: 'inline-block',
-    textAlign: 'left',
-    lineHeight: '49px',
-    height: '49px',
-    verticalAlign: 'middle'
-  }),
-
-  h1: (0, _css2.default)({
-    display: 'inline-block',
-    borderRight: '1px solid rgba(0, 0, 0,.3)',
-    margin: 0,
-    marginRight: '20px',
-    padding: '10px 23px',
-    fontSize: '24px',
-    fontWeight: 500,
-    verticalAlign: 'top'
-  }),
-
-  h2: (0, _css2.default)({
-    fontSize: '14px',
-    fontWeight: 'normal',
-    margin: 0,
-    padding: 0
-  })
-};
