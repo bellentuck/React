@@ -34,7 +34,8 @@ var App = React.createClass({
               type="search"
               onKeyUp={this.handleKeyUp}
               onChange={this.handleChange}
-              placeholder="You will search for what title you wish!"
+              placeholder="Search for whatever you wish"
+              //placeholder="You will search for what title you wish"
               value={this.state.searchTerm}
             />
           </div>
@@ -42,10 +43,15 @@ var App = React.createClass({
 
         <Hero />
         <TitleList title="Your Results: They Are Not In" url={this.state.searchUrl} />
+        // 1."Try"
         <TitleList title="If You Do Not Know What Is Best for You" url='discover/tv?sort_by=popularity.desc&page=1' />
+        // 2."Trend"
         <TitleList title="Trendy Chiquy Cool" url='discover/movie?sort_by=popularity.desc&page=1' />
-        <TitleList title="Do Not Be Afraid, It Is Only a Horrifying Film" url='genre/27/movies?sort_by=popularity.desc&page=1' />
+        // 4."Thrill"
+        <TitleList title="Do Not Be Afraid, It's Only Horrifying Film" url='genre/27/movies?sort_by=popularity.desc&page=1' />
+        // 3."Trip"
         <TitleList title="Fictional Science" url='genre/878/movies?sort_by=popularity.desc&page=1' />
+        // 5."Twerk"
         <TitleList title="Ha-Has" url='genre/35/movies?sort_by=popularity.desc&page=1' />
       </div>
     );
@@ -59,10 +65,10 @@ var Navigation = React.createClass({
       <div id="navigation" className="Navigation">
         <nav>
           <ul>
-            <li>Browse It Baby</li>
-            <li>Yourz</li>
-            <li>Tip-Top Shape</li>
-            <li>Up-and-Coming</li>
+            <li>Browse</li>
+            <li>Yours</li>
+            <li>Tops</li>
+            <li>News</li>
           </ul>
         </nav>
       </div>
