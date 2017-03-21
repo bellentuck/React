@@ -65,7 +65,9 @@ module.exports = {
     filename: 'static/js/[name].[chunkhash:8].js',
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     // We inferred the "public path" (such as / or /my-project) from homepage.
-    publicPath: publicPath
+    publicPath: publicPath,
+    // Webpack config needed to run Cesium
+    sourcePrefix: ''
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
@@ -85,8 +87,10 @@ module.exports = {
       'react-native': 'react-native-web'
     }
   },
-  
+
   module: {
+    // Webpack config needed to run Cesium
+    unknownContextCritical: false,
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
     preLoaders: [
@@ -124,7 +128,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
         loader: 'babel',
-        
+
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
@@ -165,7 +169,7 @@ module.exports = {
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]
   },
-  
+
   // We use PostCSS for autoprefixing only.
   postcss: function() {
     return [

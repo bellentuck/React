@@ -61,7 +61,9 @@ module.exports = {
     // containing code from all our entry points, and the Webpack runtime.
     filename: 'static/js/bundle.js',
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath
+    publicPath: publicPath,
+    // Webpack config needed to run Cesium
+    sourcePrefix: ''
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
@@ -81,8 +83,10 @@ module.exports = {
       'react-native': 'react-native-web'
     }
   },
-  
+
   module: {
+    // Webpack config needed to run Cesium
+    unknownContextCritical: false,
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
     preLoaders: [
@@ -127,7 +131,7 @@ module.exports = {
         include: paths.appSrc,
         loader: 'babel',
         query: {
-          
+
           // This is a feature of `babel-loader` for webpack (not Babel itself).
           // It enables caching results in ./node_modules/.cache/babel-loader/
           // directory for faster rebuilds.
@@ -161,7 +165,7 @@ module.exports = {
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]
   },
-  
+
   // We use PostCSS for autoprefixing only.
   postcss: function() {
     return [
