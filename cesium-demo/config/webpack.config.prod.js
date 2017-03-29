@@ -186,6 +186,10 @@ module.exports = {
   },
   plugins: [
     // Makes some environment variables available in index.html.
+    new webpack.DllReferencePlugin({
+      context : paths.cesiumSourceFolder,
+        manifest: require(path.join(paths.app, "distdll/cesiumDLL-manifest.json")),
+    }),
     // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
     // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     // In production, it will be an empty string unless you specify "homepage"
@@ -239,10 +243,6 @@ module.exports = {
     // having to parse `index.html`.
     new ManifestPlugin({
       fileName: 'asset-manifest.json'
-    }),
-    new webpack.DllReferencePlugin({
-      context : paths.cesiumSourceFolder,
-        manifest: require(path.join(paths.app, "distdll/cesiumDLL-manifest.json")),
     })
   ],
   // Some libraries import Node modules but don't use them in the browser.

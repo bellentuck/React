@@ -74,6 +74,7 @@ module.exports = {
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
+  ownNodeModules: resolveApp('node_modules'),
   app: resolveApp('.'),
   appConfig: resolveApp('config'),
   cesiumDebugBuild: resolveApp('node_modules/cesium/Build/CesiumUnminified/'),
