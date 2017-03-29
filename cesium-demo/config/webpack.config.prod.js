@@ -1,5 +1,6 @@
 'use strict';
 
+var path = require('path');
 var autoprefixer = require('autoprefixer');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -237,6 +238,10 @@ module.exports = {
     // having to parse `index.html`.
     new ManifestPlugin({
       fileName: 'asset-manifest.json'
+    }),
+    new webpack.DllReferencePlugin({
+      context : paths.cesiumSourceFolder,
+        manifest: require(path.join(paths.app, "distdll/cesiumDLL-manifest.json")),
     })
   ],
   // Some libraries import Node modules but don't use them in the browser.

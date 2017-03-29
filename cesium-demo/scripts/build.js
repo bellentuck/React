@@ -1,5 +1,3 @@
-'use strict';
-
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.NODE_ENV = 'production';
 
@@ -13,13 +11,15 @@ var chalk = require('chalk');
 var fs = require('fs-extra');
 var path = require('path');
 var url = require('url');
+var filesize = require('filesize');
+var gzipSize = require('gzip-size').sync;
 var webpack = require('webpack');
 var config = require('../config/webpack.config.prod');
 var paths = require('../config/paths');
 var checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
-var FileSizeReporter = require('react-dev-utils/FileSizeReporter');
-var measureFileSizesBeforeBuild = FileSizeReporter.measureFileSizesBeforeBuild;
-var printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
+var recursive = require('recursive-readdir');
+var stripAnsi = require('strip-ansi');
+var glob = require("glob");
 
 var useYarn = fs.existsSync(paths.yarnLockFile);
 
@@ -28,19 +28,89 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
 
+// Input: /User/dan/app/build/static/js/main.82be8.js
+// Output: /static/js/main.js
+function removeFileNameHash(fileName) {
+  return fileName
+    .replace(paths.appBuild, '')
+    .replace(/\/?(.*)(\.\w+)(\.js|\.css)/, (match, p1, p2, p3) => p1 + p3);
+}
+
+// Input: 1024, 2048
+// Output: "(+1 KB)"
+function getDifferenceLabel(currentSize, previousSize) {
+  var FIFTY_KILOBYTES = 1024 * 50;
+  var difference = currentSize - previousSize;
+  var fileSize = !Number.isNaN(difference) ? filesize(difference) : 0;
+  if (difference >= FIFTY_KILOBYTES) {
+    return chalk.red('+' + fileSize);
+  } else if (difference < FIFTY_KILOBYTES && difference > 0) {
+    return chalk.yellow('+' + fileSize);
+  } else if (difference < 0) {
+    return chalk.green(fileSize);
+  } else {
+    return '';
+  }
+}
+
 // First, read the current file sizes in build directory.
 // This lets us display how much they changed later.
-measureFileSizesBeforeBuild(paths.appBuild).then(previousFileSizes => {
+recursive(paths.appBuild, (err, fileNames) => {
+  var previousSizeMap = (fileNames || [])
+    .filter(fileName => /\.(js|css)$/.test(fileName))
+    .reduce((memo, fileName) => {
+      var contents = fs.readFileSync(fileName);
+      var key = removeFileNameHash(fileName);
+      memo[key] = gzipSize(contents);
+      return memo;
+    }, {});
+
   // Remove all content but keep the directory so that
   // if you're in it, you don't end up in Trash
   fs.emptyDirSync(paths.appBuild);
 
   // Start the webpack build
-  build(previousFileSizes);
+  build(previousSizeMap);
 
   // Merge with the public folder
   copyPublicFolder();
+
+  copyCesium();
 });
+
+// Print a detailed summary of build files.
+function printFileSizes(stats, previousSizeMap) {
+  var assets = stats.toJson().assets
+    .filter(asset => /\.(js|css)$/.test(asset.name))
+    .map(asset => {
+      var fileContents = fs.readFileSync(paths.appBuild + '/' + asset.name);
+      var size = gzipSize(fileContents);
+      var previousSize = previousSizeMap[removeFileNameHash(asset.name)];
+      var difference = getDifferenceLabel(size, previousSize);
+      return {
+        folder: path.join('build', path.dirname(asset.name)),
+        name: path.basename(asset.name),
+        size: size,
+        sizeLabel: filesize(size) + (difference ? ' (' + difference + ')' : '')
+      };
+    });
+  assets.sort((a, b) => b.size - a.size);
+  var longestSizeLabelLength = Math.max.apply(null,
+    assets.map(a => stripAnsi(a.sizeLabel).length)
+  );
+  assets.forEach(asset => {
+    var sizeLabel = asset.sizeLabel;
+    var sizeLength = stripAnsi(sizeLabel).length;
+    if (sizeLength < longestSizeLabelLength) {
+      var rightPadding = ' '.repeat(longestSizeLabelLength - sizeLength);
+      sizeLabel += rightPadding;
+    }
+    console.log(
+      '  ' + sizeLabel +
+      '  ' + chalk.dim(asset.folder + path.sep) + chalk.cyan(asset.name)
+    );
+  });
+}
 
 // Print out errors
 function printErrors(summary, errors) {
@@ -53,7 +123,7 @@ function printErrors(summary, errors) {
 }
 
 // Create the production build and print the deployment instructions.
-function build(previousFileSizes) {
+function build(previousSizeMap) {
   console.log('Creating an optimized production build...');
   webpack(config).run((err, stats) => {
     if (err) {
@@ -76,9 +146,10 @@ function build(previousFileSizes) {
 
     console.log('File sizes after gzip:');
     console.log();
-    printFileSizesAfterBuild(stats, previousFileSizes);
+    printFileSizes(stats, previousSizeMap);
     console.log();
 
+    var openCommand = process.platform === 'win32' ? 'start' : 'open';
     var appPackage  = require(paths.appPackageJson);
     var publicUrl = paths.publicUrl;
     var publicPath = config.output.publicPath;
@@ -135,16 +206,16 @@ function build(previousFileSizes) {
         console.log('  ' + chalk.green('"homepage"') + chalk.cyan(': ') + chalk.green('"http://myname.github.io/myapp"') + chalk.cyan(','));
         console.log();
       }
-      var build = path.relative(process.cwd(), paths.appBuild);
-      console.log('The ' + chalk.cyan(build) + ' folder is ready to be deployed.');
-      console.log('You may serve it with a static server:');
+      console.log('The ' + chalk.cyan('build') + ' folder is ready to be deployed.');
+      console.log('You may also serve it locally with a static server:')
       console.log();
       if (useYarn) {
-        console.log(`  ${chalk.cyan('yarn')} global add serve`);
+        console.log('  ' + chalk.cyan('yarn') +  ' global add pushstate-server');
       } else {
-        console.log(`  ${chalk.cyan('npm')} install -g serve`);
+        console.log('  ' + chalk.cyan('npm') +  ' install -g pushstate-server');
       }
-      console.log(`  ${chalk.cyan('serve')} -s build`);
+      console.log('  ' + chalk.cyan('pushstate-server') + ' build');
+      console.log('  ' + chalk.cyan(openCommand) + ' http://localhost:9000');
       console.log();
     }
   });
@@ -155,4 +226,35 @@ function copyPublicFolder() {
     dereference: true,
     filter: file => file !== paths.appHtml
   });
+}
+
+
+function copyCesium() {
+    const outputPath = path.join(paths.appBuild, "cesium");
+    const inputPath = path.cesiumProdBuild + "/**/*.js";
+
+    let globOptions = {
+        nodir : true,
+        cwd : "node_modules/cesium/Build/Cesium/",
+        ignore: ["*Cesium.js", "**/NaturalEarthII/**/*", "**/maki/**/*"]
+    };
+
+    glob("**/*", globOptions, function (er, files) {
+        // files is an array of filenames.
+        // If the `nonull` option is set, and nothing
+        // was found, then files is ["**/*.js"]
+        // er is an error object or null.
+
+        files.forEach(function (srcPath) {
+            let fullSrcPath = path.join("node_modules/cesium/Build/Cesium/", srcPath);
+            let fullDestPath = path.join(outputPath, srcPath);
+            fs.copySync(fullSrcPath, fullDestPath);
+        });
+    });
+
+    const cesiumDllPath = path.join(paths.app, "distdll/cesiumDll.js");
+    const cesiumOutputPath = path.join(outputPath, "cesiumDll.js");
+    fs.copySync(cesiumDllPath, cesiumOutputPath);
+
+    console.log("Cesium copied to output folder");
 }
