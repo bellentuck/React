@@ -41,6 +41,26 @@ export default class CesiumGlobe extends Component {
             terrainProvider,
         });
 
+        // Force immediate re-render now that Cesium viewer is created
+        this.setState({viewerLoaded: true});
+
+    }
+
+    /* As we start defining our Cesium-based React components,
+    we can insert them into the contents <span>,
+    and React will render them properly. */
+    renderContents() {
+      const {viewerLoaded} = this.state;
+      let contents = null;
+
+      if(viewerLoaded) {
+        contents = (
+          <span>
+          </span>
+        );
+      }
+
+      return contents;
     }
 
     componentWillUnmount() {
@@ -49,6 +69,8 @@ export default class CesiumGlobe extends Component {
         }
     }
     render() {
+        const contents = this.renderContents();
+
         const containerStyle = {
             width: '100%',
             height: '100%',
@@ -71,7 +93,9 @@ export default class CesiumGlobe extends Component {
                     className="cesiumWidget"
                     ref={ element => this.cesiumContainer = element }
                     style={widgetStyle}
-                />
+                >
+                  {contents}
+                </div>
             </div>
         );
     }
