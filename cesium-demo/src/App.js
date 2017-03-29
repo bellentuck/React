@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
-import './App.css';
 import CesiumGlobe from './cesium/CesiumGlobe';
 
 class App extends Component {
+  state = {logoCoords: null};
+
+
+  onMoveLogoClicked = () => {
+    const logoCoords = {lat: 39.097465, lon: -84.50703};
+    this.setState({logoCoords});
+  }
+
   render() {
+    const {logoCoords} = this.state;
     const containerStyle = {
       width: '100%',
       height: '100%',
@@ -16,16 +24,18 @@ class App extends Component {
 
     return (
       <div>
-        <div className="App-header">
-          <h2 className="App-intro">Cesium Demo</h2>
-        </div>
-
         <div style={containerStyle}>
-          <CesiumGlobe />
+          <CesiumGlobe logoCoords={logoCoords} />
           <div style={{position: 'fixed', top: 0}}>
             <div style={{color: 'white', fontSize: 40}}>
-              Text Over the Globe
+              Cesium Demo
             </div>
+            <button
+              onClick={this.onMoveLogoClicked}
+              style={{fontSize: 40}}
+            >
+              Move Logo
+            </button>
           </div>
         </div>
       </div>

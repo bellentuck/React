@@ -18,6 +18,21 @@ export default class CesiumBillboardExample extends Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+      if(prevProps.logoCoords !== this.props.logoCoords && this.props.logoCoords) {
+        this.updateIcon();
+      }
+    }
+
+    updateIcon() {
+      const {logoCoords} = this.props;
+      const {lat, lon} = logoCoords;
+      if(this.billboard) {
+        const newPosition = Cartesian3.fromDegrees(lon, lat);
+        this.billboard.position = newPosition;
+      }
+    }
+
     componentWillUnmount() {
         const {billboards} = this;
 
